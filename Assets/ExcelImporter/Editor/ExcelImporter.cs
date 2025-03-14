@@ -157,8 +157,8 @@ public class ExcelImporter : AssetPostprocessor
 
 			try
 			{
-				object fieldValue = CellToFieldObject(cell, entityField);
-				entityField.SetValue(entity, fieldValue);
+                object fieldValue = CellToFieldObject(cell, entityField);
+                entityField.SetValue(entity, fieldValue);
 			}
 			catch
 			{
