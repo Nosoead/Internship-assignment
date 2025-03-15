@@ -1,18 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Progress;
 
-public class EntityManager : Singleton<EntityManager>
+public class EntityManager : Singleton<EntityManager>, ISingletonInitializer
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private MonsterDB monsterDB;
 
-    // Update is called once per frame
-    void Update()
+    public void Init()
     {
-        
+        monsterDB = new MonsterDB(DataManager.Instance._DataDB.GetMonsterList());
     }
 }

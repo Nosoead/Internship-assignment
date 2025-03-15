@@ -7,7 +7,7 @@ public interface ISetPooledObject<T> where T : Component
 {
     void SetPooledObject(IObjectPool<T> pool);
 }
-public class PoolManager : Singleton<PoolManager>
+public class PoolManager : Singleton<PoolManager>, ISingletonInitializer
 {
     //private Dictionary<PoolType, GameObject> prefabDictionary = new Dictionary<PoolType, GameObject>();
     //private Dictionary<PoolType, object> poolDictionary = new Dictionary<PoolType, object>();
@@ -19,10 +19,10 @@ public class PoolManager : Singleton<PoolManager>
     //    RegisterPrefab();
     //}
 
-    //public void Init()
-    //{
-    //    RegisterPrefab();
-    //}
+    public void Init()
+    {
+        //RegisterPrefab();
+    }
 
     //private void RegisterPrefab()
     //{

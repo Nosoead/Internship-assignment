@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ResourceManager : Singleton<ResourceManager>
+public class ResourceManager : Singleton<ResourceManager>, ISingletonInitializer
 {
     public Dictionary<string, string> resourcePaths = new Dictionary<string, string>();
 
@@ -9,6 +9,11 @@ public class ResourceManager : Singleton<ResourceManager>
     {
         base.Awake();
         SetResourcePaths();
+    }
+
+    public void Init()
+    {
+        return;
     }
 
     private void SetResourcePaths()

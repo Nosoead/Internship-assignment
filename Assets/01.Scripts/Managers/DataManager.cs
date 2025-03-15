@@ -1,14 +1,20 @@
 using System.IO;
 using UnityEngine;
 
-public class DataManager : Singleton<DataManager>
+public class DataManager : Singleton<DataManager>, ISingletonInitializer
 {
     private string savePath;
+    public DataDB _DataDB { get; private set; }
 
     protected override void Awake()
     {
         base.Awake();
         savePath = Application.persistentDataPath;
+    }
+
+    public void Init()
+    {
+        _DataDB = new DataDB();
     }
 
     public void SaveData<T>(T data)
