@@ -9,134 +9,139 @@ public interface ISetPooledObject<T> where T : Component
 }
 public class PoolManager : Singleton<PoolManager>, ISingletonInitializer
 {
-    //private Dictionary<PoolType, GameObject> prefabDictionary = new Dictionary<PoolType, GameObject>();
-    //private Dictionary<PoolType, object> poolDictionary = new Dictionary<PoolType, object>();
-    //private Dictionary<PoolType, Action> resetDictionary = new Dictionary<PoolType, Action>();
+    private Dictionary<PoolType, GameObject> prefabDictionary = new Dictionary<PoolType, GameObject>();
+    private Dictionary<PoolType, object> poolDictionary = new Dictionary<PoolType, object>();
+    private Dictionary<PoolType, Action> resetDictionary = new Dictionary<PoolType, Action>();
 
-    //protected override void Awake()
-    //{
-    //    base.Awake();
-    //    RegisterPrefab();
-    //}
+    protected override void Awake()
+    {
+        base.Awake();
+        RegisterPrefab();
+    }
 
     public void Init()
     {
-        //RegisterPrefab();
+        RegisterPrefab();
     }
 
-    //private void RegisterPrefab()
-    //{
-    //    for (int i = 0; i < (int)PoolType.Count; i++)
-    //    {
-    //        PoolType poolType = (PoolType)i;
-    //        GameObject poolObject = ResourceManager.Instance.LoadResource<GameObject>($"Pool/{poolType}");
-    //        if (!prefabDictionary.ContainsKey((PoolType)i) && poolObject != null)
-    //        {
-    //            prefabDictionary.Add((PoolType)i, poolObject);
-    //        }
-    //    }
-    //    // TODO : 모든 풀링오브젝트를 미리 CreatePool
-    //    PreCreateObjectPool();
-    //}
+    private void RegisterPrefab()
+    {
+        for (int i = 0; i < (int)PoolType.Count; i++)
+        {
+            PoolType poolType = (PoolType)i;
+            GameObject poolObject = ResourceManager.Instance.LoadResource<GameObject>($"Pool/{poolType}");
+            if (!prefabDictionary.ContainsKey((PoolType)i) && poolObject != null)
+            {
+                prefabDictionary.Add((PoolType)i, poolObject);
+            }
+        }
+        // TODO : 모든 풀링오브젝트를 미리 CreatePool
+        PreCreateObjectPool();
+    }
 
-    //public void CreatePool<T>(PoolType poolType, bool collectionCheck, int defaultCapacity, int maxSize, bool preMake) where T : Component
-    //{
-    //    if (poolDictionary.ContainsKey(poolType)) return;
-    //    prefabDictionary.TryGetValue(poolType, out GameObject gameObjectPrefab);
-    //    if (gameObjectPrefab.TryGetComponent<T>(out T prefab))
-    //    {
-    //        new GenericPooledObject<T>(poolType, prefab, collectionCheck, defaultCapacity, maxSize, preMake);
-    //    }
-    //}
+    public void CreatePool<T>(PoolType poolType, bool collectionCheck, int defaultCapacity, int maxSize, bool preMake) where T : Component
+    {
+        if (poolDictionary.ContainsKey(poolType)) return;
+        prefabDictionary.TryGetValue(poolType, out GameObject gameObjectPrefab);
+        if (gameObjectPrefab.TryGetComponent<T>(out T prefab))
+        {
+            new GenericPooledObject<T>(poolType, prefab, collectionCheck, defaultCapacity, maxSize, preMake);
+        }
+    }
 
-    //private class GenericPooledObject<T> where T : Component
-    //{
-    //    private IObjectPool<T> objectPoolT;
-    //    private T gameObjectPrefab;
+    private class GenericPooledObject<T> where T : Component
+    {
+        private IObjectPool<T> objectPoolT;
+        private T gameObjectPrefab;
 
-    //    public GenericPooledObject(PoolType poolType, T prefab, bool collectionCheck, int defaultCapacity, int maxSize, bool preMake)
-    //    {
-    //        if (PoolManager.Instance.poolDictionary.ContainsKey(poolType))
-    //        {
-    //            return;
-    //        }
-    //        this.gameObjectPrefab = prefab;
-    //        objectPoolT = new ObjectPool<T>(CreateObject, OnGetObject, OnReleaseObject, OnDestroyObject, collectionCheck, defaultCapacity, maxSize);
-    //        if (preMake)
-    //        {
-    //            T[] genericArray = new T[maxSize];
-    //            for (int i = 0; i < maxSize; i++)
-    //            {
-    //                T obj = objectPoolT.Get();
-    //                genericArray[i] = obj;
-    //            }
-    //            for (int i = 0; i < maxSize; i++)
-    //            {
-    //                objectPoolT.Release(genericArray[i]);
-    //            }
-    //        }
+        public GenericPooledObject(PoolType poolType, T prefab, bool collectionCheck, int defaultCapacity, int maxSize, bool preMake)
+        {
+            if (PoolManager.Instance.poolDictionary.ContainsKey(poolType))
+            {
+                return;
+            }
+            this.gameObjectPrefab = prefab;
+            objectPoolT = new ObjectPool<T>(CreateObject, OnGetObject, OnReleaseObject, OnDestroyObject, collectionCheck, defaultCapacity, maxSize);
+            if (preMake)
+            {
+                T[] genericArray = new T[maxSize];
+                for (int i = 0; i < maxSize; i++)
+                {
+                    T obj = objectPoolT.Get();
+                    genericArray[i] = obj;
+                }
+                for (int i = 0; i < maxSize; i++)
+                {
+                    objectPoolT.Release(genericArray[i]);
+                }
+            }
 
-    //        if (!PoolManager.Instance.poolDictionary.ContainsKey(poolType))
-    //        {
-    //            PoolManager.Instance.poolDictionary.Add(poolType, objectPoolT);
-    //            PoolManager.Instance.resetDictionary.Add(poolType, objectPoolT.Clear);
-    //        }
-    //    }
+            if (!PoolManager.Instance.poolDictionary.ContainsKey(poolType))
+            {
+                PoolManager.Instance.poolDictionary.Add(poolType, objectPoolT);
+                PoolManager.Instance.resetDictionary.Add(poolType, objectPoolT.Clear);
+            }
+        }
 
-    //    private T CreateObject()
-    //    {
-    //        T objectInstance = Instantiate(gameObjectPrefab);
-    //        if (objectInstance is ISetPooledObject<T> settableObject)
-    //        {
-    //            settableObject.SetPooledObject(objectPoolT);
-    //        }
-    //        return objectInstance;
-    //    }
+        private T CreateObject()
+        {
+            T objectInstance = Instantiate(gameObjectPrefab);
+            if (objectInstance is ISetPooledObject<T> settableObject)
+            {
+                settableObject.SetPooledObject(objectPoolT);
+            }
+            return objectInstance;
+        }
 
-    //    private void OnGetObject(T obj)
-    //    {
-    //        obj.gameObject.SetActive(true);
-    //    }
+        private void OnGetObject(T obj)
+        {
+            obj.gameObject.SetActive(true);
+        }
 
-    //    private void OnReleaseObject(T obj)
-    //    {
-    //        obj.gameObject.SetActive(false);
-    //    }
+        private void OnReleaseObject(T obj)
+        {
+            obj.gameObject.SetActive(false);
+        }
 
-    //    private void OnDestroyObject(T obj)
-    //    {
-    //        Destroy(obj.gameObject);
-    //    }
-    //}
+        private void OnDestroyObject(T obj)
+        {
+            Destroy(obj.gameObject);
+        }
+    }
 
-    //public IObjectPool<T> GetObjectFromPool<T>(PoolType poolType) where T : Component
-    //{
-    //    if (poolDictionary.TryGetValue(poolType, out var pool) && pool is IObjectPool<T> poolComponent)
-    //    {
-    //        return poolComponent;
-    //    }
-    //    return null;
-    //}
+    public IObjectPool<T> GetObjectFromPool<T>(PoolType poolType) where T : Component
+    {
+        if (poolDictionary.TryGetValue(poolType, out var pool) && pool is IObjectPool<T> poolComponent)
+        {
+            return poolComponent;
+        }
+        return null;
+    }
 
-    //public void ResetObjectPool<T>(PoolType poolType) where T : Component
-    //{
-    //    if (poolDictionary.TryGetValue(poolType, out var pool) && pool is IObjectPool<T> poolComponent)
-    //    {
-    //        poolComponent.Clear();
-    //    }
-    //}
+    public void ResetObjectPool<T>(PoolType poolType) where T : Component
+    {
+        if (poolDictionary.TryGetValue(poolType, out var pool) && pool is IObjectPool<T> poolComponent)
+        {
+            poolComponent.Clear();
+        }
+    }
 
-    //public void ResetAllObjectPool()
-    //{
-    //    foreach (var pool in resetDictionary.Values)
-    //    {
-    //        pool();
-    //    }
-    //}
+    public void ResetAllObjectPool()
+    {
+        foreach (var pool in resetDictionary.Values)
+        {
+            pool();
+        }
+    }
 
-    //private void PreCreateObjectPool()
-    //{
-    //    Instance.CreatePool<PooledTestOne>(PoolType.PooledTestOne, false, 10, 10, true);
-    //    Instance.CreatePool<PooledTestTwo>(PoolType.PooledTestTwo, false, 10, 10, true);
-    //}
-};
+    private void PreCreateObjectPool()
+    {
+        Instance.CreatePool<PooledEnemy0>(PoolType.PooledEnemy0, false, 10, 10, true);
+        Instance.CreatePool<PooledEnemy1>(PoolType.PooledEnemy1, false, 10, 10, true);
+        Instance.CreatePool<PooledEnemy2>(PoolType.PooledEnemy2, false, 10, 10, true);
+        Instance.CreatePool<PooledEnemy3>(PoolType.PooledEnemy3, false, 10, 10, true);
+        Instance.CreatePool<PooledEnemy4>(PoolType.PooledEnemy4, false, 10, 10, true);
+        Instance.CreatePool<PooledProjectile>(PoolType.PooledProjectile, false, 60, 60, false);
+        Instance.CreatePool<PooledItem>(PoolType.PooledItem, false, 50, 50, false);
+    }
+}

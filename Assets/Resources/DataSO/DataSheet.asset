@@ -26,7 +26,7 @@ MonoBehaviour:
     moveSpeed: 1
     minExp: 10
     maxExp: 20
-    dropItem: 10000, 30000
+    dropItem: 0
   - monsterID: M0002
     name: Enemy1
     description: "\uC8FC\uD669\uD2F0\uB97C \uC785\uC5C8\uC2B5\uB2C8\uB2E4."
@@ -40,7 +40,7 @@ MonoBehaviour:
     moveSpeed: 1
     minExp: 11
     maxExp: 22
-    dropItem: '10001, 30000 '
+    dropItem: 10000
   - monsterID: M0003
     name: Enemy2
     description: "\uBF08\uB2E4\uADC0 \uC785\uB2C8\uB2E4."
@@ -54,7 +54,7 @@ MonoBehaviour:
     moveSpeed: 2
     minExp: 12
     maxExp: 24
-    dropItem: 10002, 20000
+    dropItem: 10001
   - monsterID: M0004
     name: Enemy3
     description: "\uAC15\uD574\uBCF4\uC774\uB294 \uBF08\uB2E4\uADC0\uC785\uB2C8\uB2E4."
@@ -68,7 +68,7 @@ MonoBehaviour:
     moveSpeed: 2
     minExp: 13
     maxExp: 26
-    dropItem: 20001
+    dropItem: 10002
   - monsterID: M0005
     name: Enemy4
     description: "\uBA38\uB9AC\uB9CC \uC788\uC2B5\uB2C8\uB2E4."
@@ -82,7 +82,7 @@ MonoBehaviour:
     moveSpeed: 0.5
     minExp: 14
     maxExp: 28
-    dropItem: 20002
+    dropItem: 30000
   ItemList:
   - itemID: 10000
     name: "\uC0BD"

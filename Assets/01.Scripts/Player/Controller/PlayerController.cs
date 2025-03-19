@@ -7,7 +7,6 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     public UnityAction<Vector2, bool> OnMoveEvent;
-
     private PlayerInput input;
 
     private bool isMoveKeyPressed = false;
@@ -16,9 +15,7 @@ public class PlayerController : MonoBehaviour
     {
         if (input == null)
         {
-            //TODO Managers로 GatherInput먼저 넣고 GameManager에서 Player 끌고와서 셋팅하도록
-            //input = GatherInputManager.Instance.GetPlayerInput();
-            input = new PlayerInput();
+            input = GatherInputManager.Instance.GetPlayerInput();
         }
     }
     private void OnEnable()
@@ -32,7 +29,6 @@ public class PlayerController : MonoBehaviour
     private void OnDisable()
     {
         input.Player.Disable();
-        //GatherInputManager.Instance.DisableInput();
     }
 
     public void PlayerMove(InputAction.CallbackContext context)

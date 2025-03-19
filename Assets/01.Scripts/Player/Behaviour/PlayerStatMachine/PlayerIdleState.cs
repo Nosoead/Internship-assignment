@@ -13,7 +13,7 @@ public class PlayerIdleState : IState
 
     public void Enter()
     {
-        
+        player.SetIsIdleState(true);
     }
 
     public void Execute()
@@ -27,6 +27,6 @@ public class PlayerIdleState : IState
 
     public void Exit()
     {
-        
+        player.SetIsIdleState(false);
     }
 }

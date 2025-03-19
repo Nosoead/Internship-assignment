@@ -12,7 +12,7 @@ public interface IDamageable
 
 public interface IInteractable
 {
-    void Interact();
+    int Interact();
 }
 
 public interface ISingletonInitializer

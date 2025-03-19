@@ -18,6 +18,7 @@ public class PlayerMoveState : IState
 
     public void Execute()
     {
+
         ApplyMovement();
 
         if (!player.IsMoveKeyPressed)
@@ -34,8 +35,7 @@ public class PlayerMoveState : IState
 
     private void ApplyMovement()
     {
-        //TODO : 속도값 매직넘버 없애기
-        Vector2 velocity = 1 * player.MoveDirection;
+        Vector2 velocity = player.MoveSpeed * player.MoveDirection;// * Time.fixedDeltaTime;
         player.SetVelocity(velocity);
     }
 }
